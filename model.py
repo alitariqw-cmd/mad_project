@@ -113,8 +113,8 @@ class AlzheimerModel:
             logger.info(f"Softmax predictions: {predictions}")
             
             # Model outputs 4 classes for Alzheimer's classification
-            class_names = ["Normal", "Mild Cognitive Impairment", "Moderate Alzheimer's", "Severe Alzheimer's"]
-            class_indices = {0: "normal", 1: "mci", 2: "moderate", 3: "severe"}
+            class_names = ["NonDemented", "VeryMildDemented", "MildDemented", "ModerateDemented"]
+            class_indices = {0: "non_demented", 1: "very_mild_demented", 2: "mild_demented", 3: "moderate_demented"}
             
             # Get the class with highest probability
             predicted_class = np.argmax(predictions)
