@@ -89,9 +89,13 @@ async def predict(file: UploadFile = File(...)):
         if file is None:
             raise HTTPException(status_code=400, detail="No file provided")
         
-        # Validate file type
-        allowed_types = {"image/jpeg", "image/png", "image/jpg", "image/bmp", "image/tiff"}
-        if file.content_type not in allowed_types:
+        # Validate file type - accept any image
+        allowed_types = {"image/jpeg", "image/png", "image/jpg", "image/bmp", "image/tiff", "image/x-windows-bmp"}
+        file_extension = file.filename.split('.')[-1].lower() if file.filename else ""
+        allowed_extensions = {"jpg", "jpeg", "png", "bmp", "tiff", "tif"}
+        
+        # Check by content type OR file extension
+        if file.content_type not in allowed_types and file_extension not in allowed_extensions:
             raise HTTPException(
                 status_code=400, 
                 detail=f"Invalid file type. Allowed types: {allowed_types}"
