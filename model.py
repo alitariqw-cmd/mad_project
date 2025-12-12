@@ -4,10 +4,14 @@ from PIL import Image
 import io
 from typing import List
 import logging
-from scipy.special import softmax
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+def softmax(x):
+    """Compute softmax values for numpy array"""
+    e_x = np.exp(x - np.max(x))  # subtract max for numerical stability
+    return e_x / e_x.sum()
 
 
 class AlzheimerModel:
