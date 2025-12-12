@@ -4,6 +4,7 @@ from PIL import Image
 import io
 from typing import List
 import logging
+from scipy.special import softmax
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -98,18 +99,16 @@ class AlzheimerModel:
             output = self.sess.run([self.output_name], {self.input_name: processed_image})
             
             # Parse output
-            predictions = output[0][0]
+            logits = output[0][0]
             
-            logger.info(f"Raw predictions shape: {predictions.shape if hasattr(predictions, 'shape') else len(predictions)}")
-            logger.info(f"Raw predictions: {predictions}")
+            logger.info(f"Raw logits: {logits}")
+            
+            # Convert logits to probabilities using softmax
+            predictions = softmax(logits)
+            
+            logger.info(f"Softmax predictions: {predictions}")
             
             # Model outputs 4 classes for Alzheimer's classification
-            # Class mapping (adjust based on your training):
-            # 0: Normal/Healthy
-            # 1: Mild Cognitive Impairment (MCI)
-            # 2: Moderate Alzheimer's
-            # 3: Severe Alzheimer's
-            
             class_names = ["Normal", "Mild Cognitive Impairment", "Moderate Alzheimer's", "Severe Alzheimer's"]
             class_indices = {0: "normal", 1: "mci", 2: "moderate", 3: "severe"}
             
@@ -117,7 +116,7 @@ class AlzheimerModel:
             predicted_class = np.argmax(predictions)
             confidence = float(predictions[predicted_class])
             
-            logger.info(f"Predicted class index: {predicted_class}, confidence: {confidence}")
+            logger.info(f"Predicted class index: {predicted_class}, confidence: {confidence:.4f}")
             
             result = {
                 "predicted_class": class_names[predicted_class],
