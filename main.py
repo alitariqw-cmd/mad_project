@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 from model import AlzheimerModel
 
+# Version: 1.2 (with softmax probabilities)
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
