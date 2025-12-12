@@ -100,6 +100,9 @@ class AlzheimerModel:
             # Parse output
             predictions = output[0][0]
             
+            logger.info(f"Raw predictions shape: {predictions.shape if hasattr(predictions, 'shape') else len(predictions)}")
+            logger.info(f"Raw predictions: {predictions}")
+            
             # Model outputs 4 classes for Alzheimer's classification
             # Class mapping (adjust based on your training):
             # 0: Normal/Healthy
@@ -114,6 +117,8 @@ class AlzheimerModel:
             predicted_class = np.argmax(predictions)
             confidence = float(predictions[predicted_class])
             
+            logger.info(f"Predicted class index: {predicted_class}, confidence: {confidence}")
+            
             result = {
                 "predicted_class": class_names[predicted_class],
                 "class_code": class_indices[predicted_class],
@@ -124,8 +129,11 @@ class AlzheimerModel:
                 }
             }
             
+            logger.info(f"Final result: {result}")
             return result
             
         except Exception as e:
             logger.error(f"Inference failed: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
             raise
