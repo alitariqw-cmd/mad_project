@@ -70,6 +70,11 @@ class AlzheimerModel:
             # Normalize to [0, 1]
             img_array = img_array / 255.0
             
+            # Apply ImageNet normalization (MUST match the collection script and training)
+            mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
+            std = np.array([0.229, 0.224, 0.225], dtype=np.float32)
+            img_array = (img_array - mean) / std
+            
             # Add batch dimension if needed
             if len(img_array.shape) == 3:
                 img_array = np.expand_dims(img_array, axis=0)
@@ -113,8 +118,10 @@ class AlzheimerModel:
             logger.info(f"Softmax predictions: {predictions}")
             
             # Model outputs 4 classes for Alzheimer's classification
-            class_names = ["NonDemented", "VeryMildDemented", "MildDemented", "ModerateDemented"]
-            class_indices = {0: "non_demented", 1: "very_mild_demented", 2: "mild_demented", 3: "moderate_demented"}
+            # CRITICAL: ImageFolder sorts alphabetically, so indices are:
+            # 0=MildDemented, 1=ModerateDemented, 2=NonDemented, 3=VeryMildDemented
+            class_names = ["MildDemented", "ModerateDemented", "NonDemented", "VeryMildDemented"]
+            class_indices = {0: "mild_demented", 1: "moderate_demented", 2: "non_demented", 3: "very_mild_demented"}
             
             # Get the class with highest probability
             predicted_class = np.argmax(predictions)
